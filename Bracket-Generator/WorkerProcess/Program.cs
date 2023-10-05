@@ -6,8 +6,6 @@ using WorkerProcess.Handlers;
 
 public class Program
 {
-
-
     private DiscordSocketClient _client;
     private CommandHandler _handler;
 
@@ -20,6 +18,7 @@ public class Program
             GatewayIntents = GatewayIntents.All
         });
         
+        await _client.LoginAsync(TokenType.Bot, "FuckYouWorld");
         await _client.StartAsync();
         _client.ButtonExecuted += ButtonHandler.MyButtonHandler;
         _client.SelectMenuExecuted += SelectMenuHandler.SelectMenu;
