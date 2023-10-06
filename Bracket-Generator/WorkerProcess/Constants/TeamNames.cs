@@ -107,5 +107,7 @@ public static class TeamConstants
         "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
     };
 
+    public const int MinPlayers = 4;
+
     public static bool IsTest = true;
 }

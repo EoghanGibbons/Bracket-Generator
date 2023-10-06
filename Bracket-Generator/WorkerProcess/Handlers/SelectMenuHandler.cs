@@ -5,35 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using WorkerProcess.Models;
 using WorkerProcess.TeamTracker;
 
 namespace WorkerProcess.Handlers;
 public static class SelectMenuHandler
 {
-    public static async Task SelectMenu(SocketMessageComponent args)
+    public static async Task SelectMenu(SocketMessageComponent context)
     {
-        switch (args.Data.CustomId)
+        switch (context.Data.CustomId)
         {
             case "TeamCountSelectMenu":
-                var value = int.Parse(args.Data.Values.First());
+                var value = int.Parse(context.Data.Values.First());
 
-                TeamSource.Instance.SetPlayersPerTeam(args.ChannelId.Value, value);
+                TeamSource.Instance.SetPlayersPerTeam(context.ChannelId.Value, value);
+                await context.RespondAsync(
+                    $"Players per team set to {value}, there are currently {TeamSource.Instance.GetPlayers(context.ChannelId.Value).Count} players registered",
+                    ephemeral: true);
 
-                var menu = new SelectMenuBuilder()
+                var playerCount = TeamSource.Instance.GetPlayers(context.ChannelId.Value).Count;
+
+                if (playerCount % value != 0)
                 {
-                    IsDisabled = true,
-                    MinValues = 1,
-                    MaxValues = 1,
-                    Placeholder = $"{value}"
-                };
-
-                menu.AddOption("meh", "1", $"{value}");
-
-                await args.UpdateAsync(x =>
-                {
-                    x.Content = $"There's going to be {value} people per team";
-                    x.Components = new ComponentBuilder().WithSelectMenu(menu).Build();
-                });
+                    await context.FollowupAsync(
+                        $"There are {playerCount} players, this doesn't break into teams of {value} evenly, at least one team will be down a man",
+                        ephemeral: true);
+                }
 
                 break;
             default:

@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using WorkerProcess.Constants;
 using WorkerProcess.Helpers;
 using WorkerProcess.Managers;
-using WorkerProcess.Models;
 using WorkerProcess.TeamTracker;
 
 namespace WorkerProcess.Commands;
-public class CreateButtons : ModuleBase<SocketCommandContext>
+public class CreateBracket : ModuleBase<SocketCommandContext>
 {
-    [Command("StartCreating")]
+    [Command("bCreate")]
     [Summary("Creates buttons to opt into bracket generation")]
     public async Task Execute()
     {
@@ -31,7 +21,7 @@ public class CreateButtons : ModuleBase<SocketCommandContext>
             return;
         }
 
-        TeamSource.Instance.AddChannel(Context.Channel.Id);
+        TeamSource.Instance.AddChannel(Context.Channel.Id, Context.User);
 
         int userCount = 0;
         var onlineUserList = Context.Channel.GetUsersAsync();
@@ -60,7 +50,7 @@ public class CreateButtons : ModuleBase<SocketCommandContext>
 
         var builder = new ComponentBuilder()
             .WithButton("I'm IN, let's fucking GOOOO", "InButton")
-            .WithButton("Leave me outta this one, I'm no craic", "OutButton");;
+/*            .WithButton("Leave me outta this one, I'm no craic", "OutButton")*/;
 
         var teamCountSelectMenu = new SelectMenuBuilder("TeamCountSelectMenu", minValues:1, maxValues:1);
         teamCountSelectMenu.Options = new List<SelectMenuOptionBuilder>();
@@ -84,7 +74,7 @@ public class CreateButtons : ModuleBase<SocketCommandContext>
 
         // Otherwise there'll be a way to tell how many people are included.
         var row = new ActionRowBuilder()
-            .WithButton("Start Generation", "Start", ButtonStyle.Success, disabled: !TeamConstants.IsTest)
+            .WithButton("Start Generation", "Start", ButtonStyle.Success)
             .WithButton("Cancel", "Cancel", ButtonStyle.Danger);
         builder.AddRow(row);
 

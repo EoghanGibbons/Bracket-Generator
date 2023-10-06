@@ -1,4 +1,7 @@
-﻿using Discord;
+﻿using System.Text;
+using Discord;
+using Discord.WebSocket;
+using WorkerProcess.Helpers;
 using WorkerProcess.Models;
 
 namespace WorkerProcess.BracketGenerators;
@@ -34,6 +37,39 @@ public static class RoundRobinBracketGenerator
         }
 
         return bracket;
+    }
+
+    public static async Task DisplayGeneratedBracket(Bracket bracket, SocketMessageComponent message)
+    {
+        var stringBuilder = new StringBuilder();
+        string prevRound = string.Empty;
+
+        foreach (var match in bracket.Matches)
+        {
+            if (match.HomeTeam.IsDummy || match.AwayTeam.IsDummy)
+            {
+                continue;
+            }
+
+            if (!prevRound.Equals(match.Round))
+            {
+                stringBuilder.AppendLine($"{MarkDownHelper.SubHeader}Round {match.Round}: ");
+            }
+
+            // Eventually, this will also include the possibility to have text inputs for score, so, probably we'll be returning a message component instead
+            stringBuilder.AppendLine($"{match.HomeTeam.BracketDisplay} VS {match.AwayTeam.BracketDisplay}");
+            stringBuilder.AppendLine($"{match.HomeTeam.PlayerDisplay} VS {match.AwayTeam.PlayerDisplay}");
+            
+            if (!prevRound.Equals(match.Round))
+            {
+                await message.Channel.SendMessageAsync(stringBuilder.ToString());
+                stringBuilder.Clear();
+                prevRound = match.Round;
+            }
+        }
+
+        // send out the last message, since for the final round we won't have a loop hit
+        await message.Channel.SendMessageAsync(stringBuilder.ToString());
     }
 
     private static Match CreateMatchWithRandomHomeAndAway(Team firstTeam, Team secondTeam, int round)
