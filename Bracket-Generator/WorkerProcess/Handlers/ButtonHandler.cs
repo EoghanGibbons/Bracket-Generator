@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Sources;
+﻿using System.Text;
 using Discord;
 using Discord.WebSocket;
 using WorkerProcess.BracketGenerators;
@@ -27,11 +21,10 @@ public static class ButtonHandler
                     await component.RespondAsync("You are already in, no need to go joining again", ephemeral: true);
                     return;
                 }
-                
-                var organizer = TeamSource.Instance.GetOrganizer(component.ChannelId.Value);
 
-                await organizer.SendMessageAsync(
-                    $"{component.User} has joined the tournament you're creating on {component.Channel}");
+                await component.RespondAsync(
+                    "You've registered for the tournament, sit tight while we wait for more people to join",
+                    ephemeral: true);
 
                 TeamSource.Instance.AddUser(component.ChannelId.Value, component.User);
                 

@@ -109,5 +109,5 @@ public static class TeamConstants
 
     public const int MinPlayers = 4;
 
-    public static bool IsTest = true;
+    public static bool IsTest = false;
 }

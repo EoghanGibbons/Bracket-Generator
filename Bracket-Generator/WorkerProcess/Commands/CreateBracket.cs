@@ -49,8 +49,7 @@ public class CreateBracket : ModuleBase<SocketCommandContext>
         }
 
         var builder = new ComponentBuilder()
-            .WithButton("I'm IN, let's fucking GOOOO", "InButton")
-/*            .WithButton("Leave me outta this one, I'm no craic", "OutButton")*/;
+            .WithButton("I'm IN, let's fucking GOOOO", "InButton");
 
         var teamCountSelectMenu = new SelectMenuBuilder("TeamCountSelectMenu", minValues:1, maxValues:1);
         teamCountSelectMenu.Options = new List<SelectMenuOptionBuilder>();
@@ -71,8 +70,7 @@ public class CreateBracket : ModuleBase<SocketCommandContext>
         var teamCountRow = new ActionRowBuilder();
         teamCountRow.WithSelectMenu(teamCountSelectMenu);
         builder.AddRow(teamCountRow);
-
-        // Otherwise there'll be a way to tell how many people are included.
+        
         var row = new ActionRowBuilder()
             .WithButton("Start Generation", "Start", ButtonStyle.Success)
             .WithButton("Cancel", "Cancel", ButtonStyle.Danger);
